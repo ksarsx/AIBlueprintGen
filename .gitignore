@@ -1,0 +1,11 @@
+# Unreal / Visual Studio
+Binaries/
+Intermediate/
+Saved/
+.vs/
+*.sln
+*.suo
+
+# installer builds
+dist/
+*.exe

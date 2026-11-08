@@ -1,0 +1,20 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "0.1.0",
+	"FriendlyName": "AI Blueprint Generator",
+	"Description": "Copy-paste workflow for building and editing Blueprint node graphs with any external AI: copies a ready prompt (with Blueprint context), imports the JSON answer into the Blueprint and returns import errors as a ready fix prompt.",
+	"Category": "Editor",
+	"CreatedBy": "AIBlueprintGen",
+	"CanContainContent": false,
+	"IsBetaVersion": true,
+	"Installed": false,
+	"EnabledByDefault": false,
+	"Modules": [
+		{
+			"Name": "AIBlueprintGen",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
+		}
+	]
+}
