@@ -23,7 +23,7 @@ namespace
 	constexpr int32 NodeSpacingY = 260;
 	constexpr int32 BlockGapY = 320;
 
-	FString Normalize(const FString& In)
+	FString NormalizeMatName(const FString& In)
 	{
 		FString Out;
 		for (const TCHAR Ch : In)
@@ -63,7 +63,7 @@ namespace
 			Name = TEXT("LinearInterpolate");
 		}
 
-		const FString Wanted = Normalize(Name);
+		const FString Wanted = NormalizeMatName(Name);
 		TArray<FString> Similar;
 		UClass* Found = nullptr;
 		for (TObjectIterator<UClass> It; It; ++It)
@@ -76,7 +76,7 @@ namespace
 			}
 			FString Short = Class->GetName();
 			Short.RemoveFromStart(TEXT("MaterialExpression"));
-			const FString ShortNorm = Normalize(Short);
+			const FString ShortNorm = NormalizeMatName(Short);
 			if (ShortNorm == Wanted)
 			{
 				Found = Class;
@@ -108,14 +108,14 @@ namespace
 		{
 			return Direct;
 		}
-		const FString Wanted = Normalize(Name);
+		const FString Wanted = NormalizeMatName(Name);
 		if (Wanted.IsEmpty())
 		{
 			return nullptr;
 		}
 		for (TFieldIterator<FProperty> It(Object->GetClass()); It; ++It)
 		{
-			if (Normalize(It->GetName()) == Wanted || Normalize(It->GetDisplayNameText().ToString()) == Wanted)
+			if (NormalizeMatName(It->GetName()) == Wanted || NormalizeMatName(It->GetDisplayNameText().ToString()) == Wanted)
 			{
 				return *It;
 			}
@@ -172,7 +172,7 @@ namespace
 
 	bool ResolveEnumValue(const UEnum* Enum, const FString& Value, int64& OutValue, FString& OutValid)
 	{
-		const FString Wanted = Normalize(Value);
+		const FString Wanted = NormalizeMatName(Value);
 		TArray<FString> Valid;
 		int64 Found = INDEX_NONE;
 		bool bFound = false;
@@ -198,7 +198,7 @@ namespace
 						Candidate = Full.Mid(UnderscoreIdx + 1); // BLEND_Translucent -> Translucent
 					}
 				}
-				if (Normalize(Candidate) == Wanted || Normalize(Enum->GetDisplayNameTextByIndex(i).ToString()) == Wanted)
+				if (NormalizeMatName(Candidate) == Wanted || NormalizeMatName(Enum->GetDisplayNameTextByIndex(i).ToString()) == Wanted)
 				{
 					Found = Enum->GetValueByIndex(i);
 					bFound = true;
@@ -358,10 +358,10 @@ namespace
 				return true;
 			}
 		}
-		const FString Norm = Normalize(Trimmed);
+		const FString Norm = NormalizeMatName(Trimmed);
 		for (const FString& Name : Names)
 		{
-			if (!Name.IsEmpty() && Normalize(Name) == Norm)
+			if (!Name.IsEmpty() && NormalizeMatName(Name) == Norm)
 			{
 				OutExact = Name;
 				return true;
@@ -407,7 +407,7 @@ namespace
 		}
 		OutValid = FString::Join(Valid, TEXT(", "));
 
-		FString Norm = Normalize(Name);
+		FString Norm = NormalizeMatName(Name);
 		if (Norm == TEXT("emissive")) { Norm = TEXT("emissivecolor"); }
 		else if (Norm == TEXT("diffuse") || Norm == TEXT("albedo") || Norm == TEXT("color")) { Norm = TEXT("basecolor"); }
 		else if (Norm == TEXT("ao")) { Norm = TEXT("ambientocclusion"); }
@@ -415,7 +415,7 @@ namespace
 		else if (Norm == TEXT("wpo")) { Norm = TEXT("worldpositionoffset"); }
 		for (const FEntry& Entry : Entries)
 		{
-			if (Normalize(Entry.Name) == Norm)
+			if (NormalizeMatName(Entry.Name) == Norm)
 			{
 				Out = Entry.Property;
 				return true;
@@ -438,7 +438,7 @@ namespace
 		{
 			FString Error;
 			UMaterial* AsMaterial = Cast<UMaterial>(Object);
-			if (AsMaterial && Normalize(Setting.Key) == TEXT("shadingmodel"))
+			if (AsMaterial && NormalizeMatName(Setting.Key) == TEXT("shadingmodel"))
 			{
 				int64 ModelValue = INDEX_NONE;
 				FString Valid;

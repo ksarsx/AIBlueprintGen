@@ -38,7 +38,7 @@ namespace
 	}
 
 	/** "node", "node.Pin", "Material.BaseColor". Pin may be empty. */
-	bool ParsePinRef(const FString& In, FABGMatPinRef& Out)
+	bool ParseMatPinRef(const FString& In, FABGMatPinRef& Out)
 	{
 		const FString Text = In.TrimStartAndEnd();
 		if (Text.IsEmpty())
@@ -59,7 +59,7 @@ namespace
 		return !Out.NodeId.IsEmpty();
 	}
 
-	void ReadStringList(const TSharedPtr<FJsonObject>& Obj, const TCHAR* Field, TArray<FString>& Out)
+	void ReadMatStringList(const TSharedPtr<FJsonObject>& Obj, const TCHAR* Field, TArray<FString>& Out)
 	{
 		FString Single;
 		const TArray<TSharedPtr<FJsonValue>>* Many = nullptr;
@@ -109,7 +109,7 @@ bool FABGMaterialJson::Parse(const FString& InJson, FABGMaterialSpec& OutSpec, T
 	}
 
 	const int32 ErrorsBefore = OutErrors.Num();
-	ReadStringList(Root, TEXT("unsupported"), OutSpec.Unsupported);
+	ReadMatStringList(Root, TEXT("unsupported"), OutSpec.Unsupported);
 
 	const TSharedPtr<FJsonObject>* SettingsObj = nullptr;
 	if (Root->TryGetObjectField(TEXT("settings"), SettingsObj) && SettingsObj)
@@ -211,7 +211,7 @@ bool FABGMaterialJson::Parse(const FString& InJson, FABGMaterialSpec& OutSpec, T
 				continue;
 			}
 			FABGMatConnection Conn;
-			if (!ParsePinRef(FromText, Conn.From) || !ParsePinRef(ToText, Conn.To))
+			if (!ParseMatPinRef(FromText, Conn.From) || !ParseMatPinRef(ToText, Conn.To))
 			{
 				OutErrors.Add(FString::Printf(TEXT("connections[%d]: \"from\"/\"to\" must look like \"node\", \"node.Pin\" or \"Material.BaseColor\"."), i));
 				continue;
@@ -224,11 +224,11 @@ bool FABGMaterialJson::Parse(const FString& InJson, FABGMaterialSpec& OutSpec, T
 	}
 
 	TArray<FString> DisconnectTexts;
-	ReadStringList(Root, TEXT("disconnect"), DisconnectTexts);
+	ReadMatStringList(Root, TEXT("disconnect"), DisconnectTexts);
 	for (const FString& Text : DisconnectTexts)
 	{
 		FABGMatPinRef Ref;
-		if (!ParsePinRef(Text, Ref) || Ref.PinName.IsEmpty())
+		if (!ParseMatPinRef(Text, Ref) || Ref.PinName.IsEmpty())
 		{
 			OutErrors.Add(FString::Printf(TEXT("disconnect \"%s\": must look like \"node.Input\" or \"Material.BaseColor\"."), *Text));
 			continue;
@@ -238,7 +238,7 @@ bool FABGMaterialJson::Parse(const FString& InJson, FABGMaterialSpec& OutSpec, T
 	}
 
 	TArray<FString> RemoveIds;
-	ReadStringList(Root, TEXT("remove"), RemoveIds);
+	ReadMatStringList(Root, TEXT("remove"), RemoveIds);
 	for (const FString& Id : RemoveIds)
 	{
 		if (!IsExistingId(Id))

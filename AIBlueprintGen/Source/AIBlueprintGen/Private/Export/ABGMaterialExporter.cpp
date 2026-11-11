@@ -17,7 +17,7 @@
 
 namespace
 {
-	FString ToCondensedJson(const TSharedRef<FJsonObject>& Object)
+	FString MatToCondensedJson(const TSharedRef<FJsonObject>& Object)
 	{
 		FString Out;
 		TSharedRef<TJsonWriter<TCHAR, TCondensedJsonPrintPolicy<TCHAR>>> Writer =
@@ -160,7 +160,7 @@ FString FABGMaterialExporter::Export(UMaterial* Material, UMaterialFunction* Fun
 		Json->SetArrayField(TEXT("in"), In);
 		Json->SetArrayField(TEXT("out"), Out);
 		Exported.Add(Expression);
-		NodeLines.Add(TEXT("    ") + ToCondensedJson(Json));
+		NodeLines.Add(TEXT("    ") + MatToCondensedJson(Json));
 	}
 
 	TArray<FString> ConnectionLines;
